@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>этот заголоок нихуя не делает</h1>
+    <script>
+        var h1Element = document.createElement("h1");
+        var video = "https://www.youtube.com/watch?v=WQ_Q3JLlxbQ"
+        var auth = {'login': 'stass0710@gmail.com', 'password': 'Rssqv312'}
+
+        function makeAuthorizeCall(auth) {
+        console.log("Calling video.list...")        
+        h1Element.textContent = "Calling video.list..."
+
+        youtube.videos.list({
+        auth: auth,
+        id: "WQ_Q3JLlxbQ",
+        part: "viewCount", 
+        }, function(err, response) {
+            if (err) {
+            console.log(err)
+            return
+            }
+            if (response.data.items) {
+            if (response.data.items[0]) {
+                console.log("Fond video. Update title...")
+                h1Element.textContent = "Fond video. Update title..."
+                updateVideo(response.data.items[0], auth)
+            } else {
+                console.log("0 items in list.")
+                h1Element.textContent = "0 items in list."
+            }
+            } else {
+            console.log("No items found\n" + response)
+            h1Element.textContent = "No items found\n" + response
+            return
+            }
+        })
+        }
+
+        function updateVideo(video, auth) {
+        var viewText = video.statistics.viewCount.toLocaleString()
+        video.snippet.title = viewText + "лайков и удалю канал!!!"
+        console.log("Updating tittle to '" + video.snippet.title + "'")
+        h1Element.textContent = "Updating tittle to '" + video.snippet.title + "'"
+        console.log(video)
+        youtube.videos.update({
+            auth: auth,
+            part: 'viewCount',
+            resource: video,   
+        }, 
+        function(err, response) {
+            if (err) {
+            console.log(err)
+            return
+            }
+            if (response.data.items) {
+            if (response.data.items[0]) {
+                console.log("Complete!")
+                h1Element.textContent = "Complete!"
+            } else {
+                console.log("0 items in list.") 
+                h1Element.textContent = "0 items in list."    
+            }
+        }  else {
+            console.log("No items found\n")
+            h1Element.textContent = "No items found\n"
+            return
+        }
+        })
+        }
+    </script>
+</body>
+</html>
